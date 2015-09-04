@@ -73,8 +73,11 @@ namespace RimDev.Supurlative.Tests
         public void Cannot_generate_a_path_with_invalid_constraints()
         {
             string expected = null;
-            var actual = Generator.Generate("constraint", new { Id = "abc" });
-
+            const string routeName = "foo.show";
+            const string routeTemplate = "foo/{id:int}";
+            string actual = CreateAUrlGenerator(routeName, routeTemplate,
+                routeConstraints: new { id = @"\d+" })
+                .Generate(routeName, new { Id = "abc" });
             Assert.Equal(expected, actual);
         }
 
