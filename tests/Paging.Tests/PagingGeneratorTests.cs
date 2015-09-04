@@ -8,9 +8,9 @@ using Xunit;
 
 namespace RimDev.Supurlative.Paging.Tests
 {
-    public class PagingGneratorTests
+    public class PagingGeneratorTests
     {
-        public PagingGneratorTests()
+        public PagingGeneratorTests()
         {
             Generator = InitializeGenerator();
 
