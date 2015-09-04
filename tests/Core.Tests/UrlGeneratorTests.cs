@@ -46,6 +46,18 @@ namespace RimDev.Supurlative.Tests
         }
 
         [Fact]
+        public void Can_generate_a_relative_path()
+        {
+            string expected = "/foo/1";
+            const string routeName = "foo.show";
+            const string routeTemplate = "foo/{id}";
+            string actual = CreateAUrlGenerator(routeName, routeTemplate,
+                supurlativeOptions: new SupurlativeOptions { UriKind = UriKind.Relative })
+                .Generate(routeName, new { Id = 1 });
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
         public void Can_generate_a_path_with_anonymous_complex_route_properties()
         {
             string expected = _baseURL + "foo/1?bar.abc=abc&bar.def=def";
