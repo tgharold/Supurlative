@@ -10,6 +10,8 @@ namespace RimDev.Supurlative.Paging.Tests
 {
     public class PagingGeneratorTests
     {
+        const string _baseUrl = "http://localhost:8000/";
+
         public PagingGeneratorTests()
         {
             Generator = InitializeGenerator();
@@ -39,12 +41,17 @@ namespace RimDev.Supurlative.Paging.Tests
         [Fact]
         public void Can_generate_paged_result_with_query_string()
         {
-           var result =  Generator.Generate("page.query", new Request { page = 1 }, PagedList);
+            string expectedUrl = _baseUrl + "paging?page=2&currentpagenumber=0";
+            const string routeName = "page.query";
+            const string routeTemplate = "paging";
+
+            PagingResult actual = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
+                .Generate(routeName, new Request { page = 1 }, PagedList);
+            var result =  Generator.Generate("page.query", new Request { page = 1 }, PagedList);
 
             Assert.True(result.HasNext);
             Assert.False(result.HasPrevious);
-
-            Assert.Equal("http://localhost:8000/paging?page=2&currentpagenumber=0", result.NextUrl);
+            Assert.Equal(expectedUrl, result.NextUrl);
         }
 
         [Fact]
