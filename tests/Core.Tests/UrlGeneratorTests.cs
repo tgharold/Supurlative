@@ -85,7 +85,19 @@ namespace RimDev.Supurlative.Tests
             const string routeTemplate = "foo/{one}/{two}";
             string actual = CreateAUrlGenerator(routeName, routeTemplate,
                 routeDefaults: new { one = RouteParameter.Optional, two = RouteParameter.Optional })
-                .Generate(routeName, new { one = 1 }));
+                .Generate(routeName, new { one = 1 });
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Can_generate_two_optional_path_items_template_two()
+        {
+            string expected = _baseURL + "foo/1/2";
+            const string routeName = "foo.one.two";
+            const string routeTemplate = "foo/{one}/{two}";
+            string actual = CreateAUrlGenerator(routeName, routeTemplate,
+                routeDefaults: new { one = RouteParameter.Optional, two = RouteParameter.Optional })
+                .Generate(routeName, new { one = 1, two = 2 });
             Assert.Equal(expected, actual);
         }
 
