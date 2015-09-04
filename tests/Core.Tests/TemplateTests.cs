@@ -22,7 +22,7 @@ namespace RimDev.Supurlative.Tests
             return new TemplateGenerator(request, options ?? SupurlativeOptions.Defaults);
         }
 
-        private static string ExerciseGetGenerator(string routeName, string routeTemplate, object routeOptions = null, SupurlativeOptions generatorOptions = null)
+        private static string ExerciseGetGenerator(string routeName, string routeTemplate, object routeOptions, SupurlativeOptions generatorOptions)
         {
             HttpRouteCollection routes = new HttpRouteCollection();
             routes.MapHttpRoute(routeName, routeTemplate, routeOptions);
@@ -36,6 +36,16 @@ namespace RimDev.Supurlative.Tests
             request.SetConfiguration(configuration);
             TemplateGenerator generator = new TemplateGenerator(request, generatorOptions);
             return generator.Generate(routeName);
+        }
+
+        private static string ExerciseGetGenerator(string routeName, string routeTemplate, SupurlativeOptions generatorOptions)
+        {
+            return ExerciseGetGenerator(routeTemplate, routeTemplate, null, generatorOptions);
+        }
+
+        private static string ExerciseGetGenerator(string routeName, string routeTemplate)
+        {
+            return ExerciseGetGenerator(routeTemplate, routeTemplate, null, null);
         }
 
         [Fact]
