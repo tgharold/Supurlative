@@ -140,6 +140,18 @@ namespace RimDev.Supurlative.Tests
         }
 
         [Fact]
+        public void Can_generate_a_multipart_fully_qualified_path_with_constraints()
+        {
+            string expected = _baseURL + "foo/{one}/{two}";
+            const string routeName = "foo.one.two";
+            const string routeTemplate = "foo/{one:int}/{two:int}";
+            string actual = CreateTemplateGenerator(routeName, routeTemplate,
+                routeConstraints: new { one = @"\d+", two = @"\d+" })
+                .Generate(routeName);
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
         public void Can_generate_a_path_with_anonymous_complex_route_properties()
         {
             string expected = _baseURL + "foo/{id}{?bar.abc,bar.def}";
