@@ -107,18 +107,8 @@ namespace RimDev.Supurlative.Tests
             SupurlativeOptions options = SupurlativeOptions.Defaults;
             options.AddFormatter<DummyFormatter>();
 
-            HttpRouteCollection routes = new HttpRouteCollection();
-            routes.MapHttpRoute(
-                routeName,
-                routeTemplate
-                );
-            HttpConfiguration configuration = new HttpConfiguration(routes);
-            HttpRequestMessage request = new HttpRequestMessage
-            {
-                RequestUri = new Uri(_baseUrl),
-                Method = HttpMethod.Get
-            };
-            request.SetConfiguration(configuration);
+            HttpRequestMessage request;
+            request = TestHelper.CreateAHttpRequestMessage(_baseUrl, routeName, routeTemplate);
 
             var generator = new Generator(request, options);
 
