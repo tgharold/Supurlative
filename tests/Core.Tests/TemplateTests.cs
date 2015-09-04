@@ -78,9 +78,11 @@ namespace RimDev.Supurlative.Tests
         [Fact]
         public void Can_generate_a_fully_qualified_path_template_with_multiple_querystring()
         {
-            var expected = "http://localhost:8000/foo/{id}{?bar,bam}";
-            var actual = Generator.Generate("foo.show", new { Id = 1, Bar = "Foo", Bam = 2 });
-
+            string expected = _baseURL + "foo/{id}{?bar,bam}";
+            const string routeName = "foo.show";
+            const string routeTemplate = "foo/{id}";
+            string actual = CreateTemplateGenerator(routeName, routeTemplate)
+                .Generate(routeName, new { Id = 1, Bar = "Foo", Bam = 2 });
             Assert.Equal(expected, actual);
         }
 
@@ -118,7 +120,8 @@ namespace RimDev.Supurlative.Tests
             const string routeName = "constraint";
             const string routeTemplate = "constraints/{id:int}";
             string actual = CreateTemplateGenerator(routeName, routeTemplate, 
-                routeConstraints: new { id = @"\d+" });
+                routeConstraints: new { id = @"\d+" })
+                .Generate(routeName);
             Assert.Equal(expected, actual);
         }
 
@@ -128,8 +131,8 @@ namespace RimDev.Supurlative.Tests
             string expected = _baseURL + "foo/{id}{?bar.abc,bar.def}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate,
-                generatorRequest: new {Id = 1, Bar = new {Abc = "abc", Def = "def"}});
+            string actual = CreateTemplateGenerator(routeName, routeTemplate)
+                .Generate(routeName, new {Id = 1, Bar = new {Abc = "abc", Def = "def"}});
             Assert.Equal(expected, actual);
         }
 
