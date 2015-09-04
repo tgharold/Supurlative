@@ -114,6 +114,17 @@ namespace RimDev.Supurlative.Tests
             Assert.Equal(expected, actual);
         }
 
+        [Fact]
+        public void Make_sure_generic_nested_class_property_values_do_show_in_url()
+        {
+            string expected = _baseURL + "foo/1?filter.level=42";
+            const string routeName = "foo.show";
+            const string routeTemplate = "foo/{id}";
+            string actual = CreateAUrlGenerator(routeName, routeTemplate)
+                .Generate(routeName, new { Id = 1, Filter = new { Level = 42 } });
+            Assert.Equal(expected, actual);
+        }
+
         public class TestNestedClass
         {
             public int Id { get; set; }
