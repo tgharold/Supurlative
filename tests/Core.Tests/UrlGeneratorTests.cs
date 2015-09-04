@@ -20,12 +20,41 @@ namespace RimDev.Supurlative.Tests
             return new UrlGenerator(request);
         }
 
+        const string _baseURL = "http://localhost:8000/";
+
+        private static UrlGenerator CreateAUrlGenerator(
+            string routeName,
+            string routeTemplate,
+            object routeDefaults = null,
+            object routeConstraints = null,
+            SupurlativeOptions supurlativeOptions = null
+            )
+        {
+            HttpRouteCollection routes = new HttpRouteCollection();
+            routes.MapHttpRoute(
+                routeName,
+                routeTemplate,
+                defaults: routeDefaults,
+                constraints: routeConstraints
+                );
+            HttpConfiguration configuration = new HttpConfiguration(routes);
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(_baseURL),
+                Method = HttpMethod.Get
+            };
+            request.SetConfiguration(configuration);
+            return new UrlGenerator(request, supurlativeOptions);
+        }
+
         [Fact]
         public void Can_generate_a_fully_qualified_path()
         {
-            var expected = "http://localhost:8000/foo/1";
-            var actual = Generator.Generate("foo.show", new { Id = 1 });
-
+            string expected = _baseURL + "foo/1";
+            const string routeName = "foo.show";
+            const string routeTemplate = "foo/{id}";
+            string actual = CreateAUrlGenerator(routeName, routeTemplate)
+                .Generate(routeName, new { Id = 1 });
             Assert.Equal(expected, actual);
         }
 
