@@ -47,7 +47,7 @@ namespace RimDev.Supurlative.Paging.Tests
 
             PagingResult actual = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
                 .Generate(routeName, new Request { page = 1 }, PagedList);
-            var result =  Generator.Generate("page.query", new Request { page = 1 }, PagedList);
+            var result = Generator.Generate(routeName, new Request { page = 1 }, PagedList);
 
             Assert.True(result.HasNext);
             Assert.False(result.HasPrevious);
