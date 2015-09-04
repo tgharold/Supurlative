@@ -10,7 +10,7 @@ namespace RimDev.Supurlative.Tests
 {
     public static class TestHelper
     {
-        private static HttpRequestMessage CreateARequest(
+        public static HttpRequestMessage CreateAHttpRequestMessage(
             string baseUrl,
             string routeName,
             string routeTemplate,
@@ -45,7 +45,7 @@ namespace RimDev.Supurlative.Tests
             )
         {
             HttpRequestMessage request;
-            request = CreateARequest(baseUrl, routeName, routeTemplate, routeDefaults, routeConstraints);
+            request = CreateAHttpRequestMessage(baseUrl, routeName, routeTemplate, routeDefaults, routeConstraints);
             return new TemplateGenerator(request, supurlativeOptions);
         }
 
@@ -59,7 +59,7 @@ namespace RimDev.Supurlative.Tests
             )
         {
             HttpRequestMessage request;
-            request = CreateARequest(baseUrl, routeName, routeTemplate, routeDefaults, routeConstraints);
+            request = CreateAHttpRequestMessage(baseUrl, routeName, routeTemplate, routeDefaults, routeConstraints);
             return new UrlGenerator(request, supurlativeOptions);
         }
 
@@ -73,7 +73,7 @@ namespace RimDev.Supurlative.Tests
             )
         {
             HttpRequestMessage request;
-            request = CreateARequest(baseUrl, routeName, routeTemplate, routeDefaults, routeConstraints);
+            request = CreateAHttpRequestMessage(baseUrl, routeName, routeTemplate, routeDefaults, routeConstraints);
             return new Generator(request, supurlativeOptions);
         }
     }
