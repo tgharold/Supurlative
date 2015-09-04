@@ -80,9 +80,12 @@ namespace RimDev.Supurlative.Tests
         [Fact]
         public void Can_generate_two_optional_path_items_template()
         {
-            var expected = "http://localhost:8000/bar/1";
-            var actual = Generator.Generate("bar.one.two", new { one = 1 });
-
+            string expected = _baseURL + "foo/1";
+            const string routeName = "foo.one.two";
+            const string routeTemplate = "foo/{one}/{two}";
+            string actual = CreateAUrlGenerator(routeName, routeTemplate,
+                routeDefaults: new { one = RouteParameter.Optional, two = RouteParameter.Optional })
+                .Generate(routeName, new { one = 1 }));
             Assert.Equal(expected, actual);
         }
 
