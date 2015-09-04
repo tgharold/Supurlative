@@ -57,44 +57,71 @@ namespace RimDev.Supurlative.Paging.Tests
         [Fact]
         public void Can_generate_paged_result_with_query_string_and_page_expression()
         {
-            var result = Generator.Generate("page.query", new Request { page = 1 }, PagedList, x => x.currentPageNumber);
+            string expectedUrl = _baseUrl + "paging?page=1&currentpagenumber=2";
+            const string routeName = "page.query";
+            const string routeTemplate = "paging";
+
+            PagingResult actual = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
+                .Generate(routeName, new Request { page = 1 }, PagedList);
+            var result = Generator.Generate(routeName, new Request { page = 1 }, PagedList, x => x.currentPageNumber);
 
             Assert.True(result.HasNext);
             Assert.False(result.HasPrevious);
-
-            Assert.Equal("http://localhost:8000/paging?page=1&currentpagenumber=2", result.NextUrl);
+            Assert.Equal(expectedUrl, result.NextUrl);
         }
 
         [Fact]
         public void Can_generate_paged_result_with_path()
         {
-            var result = Generator.Generate("page.path", new Request { page = 1 }, PagedList);
+            string expectedUrl = _baseUrl + "paging/2?currentpagenumber=0";
+            const string routeName = "page.path";
+            const string routeTemplate = "paging/{page}";
+
+            PagingResult actual = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
+                .Generate(routeName, new Request { page = 1 }, PagedList);
+            var result = Generator.Generate(routeName, new Request { page = 1 }, PagedList);
 
             Assert.True(result.HasNext);
-            Assert.Equal("http://localhost:8000/paging/2?currentpagenumber=0", result.NextUrl);
+            Assert.Equal(expectedUrl, result.NextUrl);
         }
 
         [Fact]
         public void Can_generate_paged_result_with_path_and_page_expression()
         {
-            var result = Generator.Generate("newPage.path", new Request { page = 1 }, PagedList, x => x.currentPageNumber);
+            string expectedUrl = _baseUrl + "paging/2?page=1";
+            const string routeName = "newPage.path";
+            const string routeTemplate = "paging/{currentPageNumber}";
+
+            PagingResult actual = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
+                .Generate(routeName, new Request { page = 1 }, PagedList);
+            var result = Generator.Generate(routeName, new Request { page = 1 }, PagedList, x => x.currentPageNumber);
 
             Assert.True(result.HasNext);
-            Assert.Equal("http://localhost:8000/paging/2?page=1", result.NextUrl);
+            Assert.Equal(expectedUrl, result.NextUrl);
         }
 
         [Fact]
         public void Can_generate_paged_result_with_previous_url()
         {
-            var result = Generator.Generate("newPage.path", new Request(), PagedList.ToPagedList(2, 10));
+            string expectedUrl = _baseUrl + "paging/0?page=1";
+            const string routeName = "newPage.path";
+            const string routeTemplate = "paging/{currentPageNumber}";
+
+            PagingResult actual = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
+                .Generate(routeName, new Request { page = 1 }, PagedList);
+            var result = Generator.Generate(routeName, new Request { page = 1 }, PagedList.ToPagedList(2, 10));
 
             Assert.True(result.HasPrevious);
-            Assert.Equal("http://localhost:8000/paging/0?page=1", result.PreviousUrl);
+            Assert.Equal(expectedUrl, result.PreviousUrl);
         }
 
         [Fact]
         public void Throws_meaningful_exception_when_page_doesnt_exist()
         {
+            const string routeName = "newPage.path";
+            const string routeTemplate = "paging/{currentPageNumber}";
+
+
             var exception =
             Assert.Throws<ArgumentException>(
                 () => new PagingGenerator(HttpRequest, Generator.Options, "Poop").Generate("newPage.path", new Request(), PagedList)
