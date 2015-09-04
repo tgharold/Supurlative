@@ -28,7 +28,8 @@ namespace RimDev.Supurlative.Tests
             object routeDefaults = null,
             object routeOptions = null, 
             object routeConstraints = null, 
-            SupurlativeOptions supurlativeOptions = null)
+            SupurlativeOptions supurlativeOptions = null,
+            object generatorRequest = null)
         {
             HttpRouteCollection routes = new HttpRouteCollection();
             routes.MapHttpRoute(routeName, routeTemplate, routeOptions, routeConstraints);
@@ -40,7 +41,7 @@ namespace RimDev.Supurlative.Tests
             };
             request.SetConfiguration(configuration);
             TemplateGenerator generator = new TemplateGenerator(request, supurlativeOptions);
-            return generator.Generate(routeName);
+            return generator.Generate(routeName, generatorRequest);
         }
 
         [Fact]
@@ -123,6 +124,14 @@ namespace RimDev.Supurlative.Tests
         [Fact]
         public void Can_generate_a_path_with_anonymous_complex_route_properties()
         {
+            string expected = _baseURL + "foo/{id}{?bar.abc,bar.def}";
+            const string routeName = "foo.show";
+            const string routeTemplate = "foo/{id}";
+            string actual = ExerciseGetRequestGenerator(routeName, routeTemplate,
+                generatorRequest: new {Id = 1, Bar = new {Abc = "abc", Def = "def"}});
+            Assert.Equal(expected, actual);
+
+            
             var expected = "http://localhost:8000/foo/{id}{?bar.abc,bar.def}";
 
             var actual = Generator.Generate("foo.show", new {Id = 1, Bar = new {Abc = "abc", Def = "def"}});
