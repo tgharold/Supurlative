@@ -14,8 +14,6 @@ namespace RimDev.Supurlative.Paging.Tests
 
         public PagingGeneratorTests()
         {
-            Generator = InitializeGenerator();
-
             PagedList = Enumerable
                 .Range(1, 100)
                 .ToPagedList(1, 10);
@@ -23,21 +21,6 @@ namespace RimDev.Supurlative.Paging.Tests
         }
 
         private readonly IPagedList<int> PagedList;
-        private readonly PagingGenerator Generator;
-        private HttpRequestMessage HttpRequest { get; set; }
-
-        private PagingGenerator InitializeGenerator(SupurlativeOptions options = null)
-        {
-            HttpRequest = WebApiHelper.GetRequest();
-            var configuration = HttpRequest.GetConfiguration();
-
-            configuration.Routes.MapHttpRoute("page.query", "paging");
-            configuration.Routes.MapHttpRoute("page.path", "paging/{page}");
-            configuration.Routes.MapHttpRoute("newPage.path", "paging/{currentPageNumber}");
-
-            return new PagingGenerator(HttpRequest);
-        }
-
         [Fact]
         public void Can_generate_paged_result_with_query_string()
         {
@@ -45,9 +28,8 @@ namespace RimDev.Supurlative.Paging.Tests
             const string routeName = "page.query";
             const string routeTemplate = "paging";
 
-            PagingResult actual = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
+            PagingResult result = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
                 .Generate(routeName, new Request { page = 1 }, PagedList);
-            var result = Generator.Generate(routeName, new Request { page = 1 }, PagedList);
 
             Assert.True(result.HasNext);
             Assert.False(result.HasPrevious);
@@ -61,9 +43,8 @@ namespace RimDev.Supurlative.Paging.Tests
             const string routeName = "page.query";
             const string routeTemplate = "paging";
 
-            PagingResult actual = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
-                .Generate(routeName, new Request { page = 1 }, PagedList);
-            var result = Generator.Generate(routeName, new Request { page = 1 }, PagedList, x => x.currentPageNumber);
+            PagingResult result = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
+                .Generate(routeName, new Request { page = 1 }, PagedList, x => x.currentPageNumber);
 
             Assert.True(result.HasNext);
             Assert.False(result.HasPrevious);
@@ -77,9 +58,8 @@ namespace RimDev.Supurlative.Paging.Tests
             const string routeName = "page.path";
             const string routeTemplate = "paging/{page}";
 
-            PagingResult actual = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
+            PagingResult result = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
                 .Generate(routeName, new Request { page = 1 }, PagedList);
-            var result = Generator.Generate(routeName, new Request { page = 1 }, PagedList);
 
             Assert.True(result.HasNext);
             Assert.Equal(expectedUrl, result.NextUrl);
@@ -92,9 +72,8 @@ namespace RimDev.Supurlative.Paging.Tests
             const string routeName = "newPage.path";
             const string routeTemplate = "paging/{currentPageNumber}";
 
-            PagingResult actual = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
-                .Generate(routeName, new Request { page = 1 }, PagedList);
-            var result = Generator.Generate(routeName, new Request { page = 1 }, PagedList, x => x.currentPageNumber);
+            PagingResult result = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
+                .Generate(routeName, new Request { page = 1 }, PagedList, x => x.currentPageNumber);
 
             Assert.True(result.HasNext);
             Assert.Equal(expectedUrl, result.NextUrl);
@@ -107,9 +86,8 @@ namespace RimDev.Supurlative.Paging.Tests
             const string routeName = "newPage.path";
             const string routeTemplate = "paging/{currentPageNumber}";
 
-            PagingResult actual = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
-                .Generate(routeName, new Request { page = 1 }, PagedList);
-            var result = Generator.Generate(routeName, new Request { page = 1 }, PagedList.ToPagedList(2, 10));
+            PagingResult result = PagingTestHelper.CreateAPagingGenerator(_baseUrl, routeName, routeTemplate)
+                .Generate(routeName, new Request { page = 1 }, PagedList.ToPagedList(2, 10));
 
             Assert.True(result.HasPrevious);
             Assert.Equal(expectedUrl, result.PreviousUrl);
@@ -121,17 +99,18 @@ namespace RimDev.Supurlative.Paging.Tests
             const string routeName = "newPage.path";
             const string routeTemplate = "paging/{currentPageNumber}";
 
+            HttpRequestMessage request;
+            request = TestHelper.CreateAHttpRequestMessage(_baseUrl, routeName, routeTemplate);
 
             var exception =
             Assert.Throws<ArgumentException>(
-                () => new PagingGenerator(HttpRequest, Generator.Options, "Poop").Generate("newPage.path", new Request(), PagedList)
+                () => new PagingGenerator(request, SupurlativeOptions.Defaults, "DoesNotExist").Generate(routeName, new Request(), PagedList)
             );
         }
 
         public class Request
         {
             public int page { get; set; }
-
             public int currentPageNumber { get; set; }
         }
     }
