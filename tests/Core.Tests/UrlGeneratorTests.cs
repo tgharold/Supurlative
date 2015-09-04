@@ -7,40 +7,15 @@ namespace RimDev.Supurlative.Tests
 {
     public class UrlGeneratorTests
     {
-        const string _baseURL = "http://localhost:8000/";
-
-        private static UrlGenerator CreateAUrlGenerator(
-            string routeName,
-            string routeTemplate,
-            object routeDefaults = null,
-            object routeConstraints = null,
-            SupurlativeOptions supurlativeOptions = null
-            )
-        {
-            HttpRouteCollection routes = new HttpRouteCollection();
-            routes.MapHttpRoute(
-                routeName,
-                routeTemplate,
-                defaults: routeDefaults,
-                constraints: routeConstraints
-                );
-            HttpConfiguration configuration = new HttpConfiguration(routes);
-            HttpRequestMessage request = new HttpRequestMessage
-            {
-                RequestUri = new Uri(_baseURL),
-                Method = HttpMethod.Get
-            };
-            request.SetConfiguration(configuration);
-            return new UrlGenerator(request, supurlativeOptions);
-        }
+        const string _baseUrl = "http://localhost:8000/";
 
         [Fact]
         public void Can_generate_a_fully_qualified_path()
         {
-            string expected = _baseURL + "foo/1";
+            string expected = _baseUrl + "foo/1";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateAUrlGenerator(routeName, routeTemplate)
+            string actual = TestHelper.CreateAUrlGenerator(_baseUrl, routeName, routeTemplate)
                 .Generate(routeName, new { Id = 1 });
             Assert.Equal(expected, actual);
         }
@@ -51,7 +26,7 @@ namespace RimDev.Supurlative.Tests
             string expected = "/foo/1";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateAUrlGenerator(routeName, routeTemplate,
+            string actual = TestHelper.CreateAUrlGenerator(_baseUrl, routeName, routeTemplate,
                 supurlativeOptions: new SupurlativeOptions { UriKind = UriKind.Relative })
                 .Generate(routeName, new { Id = 1 });
             Assert.Equal(expected, actual);
@@ -60,10 +35,10 @@ namespace RimDev.Supurlative.Tests
         [Fact]
         public void Can_generate_a_path_with_anonymous_complex_route_properties()
         {
-            string expected = _baseURL + "foo/1?bar.abc=abc&bar.def=def";
+            string expected = _baseUrl + "foo/1?bar.abc=abc&bar.def=def";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateAUrlGenerator(routeName, routeTemplate)
+            string actual = TestHelper.CreateAUrlGenerator(_baseUrl, routeName, routeTemplate)
                 .Generate(routeName, new { Id = 1, Bar = new { Abc = "abc", Def = "def" } });
             Assert.Equal(expected, actual);
         }
@@ -74,7 +49,7 @@ namespace RimDev.Supurlative.Tests
             string expected = null;
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id:int}";
-            string actual = CreateAUrlGenerator(routeName, routeTemplate,
+            string actual = TestHelper.CreateAUrlGenerator(_baseUrl, routeName, routeTemplate,
                 routeConstraints: new { id = @"\d+" })
                 .Generate(routeName, new { Id = "abc" });
             Assert.Equal(expected, actual);
@@ -83,10 +58,10 @@ namespace RimDev.Supurlative.Tests
         [Fact]
         public void Can_generate_two_optional_path_items_template()
         {
-            string expected = _baseURL + "foo/1";
+            string expected = _baseUrl + "foo/1";
             const string routeName = "foo.one.two";
             const string routeTemplate = "foo/{one}/{two}";
-            string actual = CreateAUrlGenerator(routeName, routeTemplate,
+            string actual = TestHelper.CreateAUrlGenerator(_baseUrl, routeName, routeTemplate,
                 routeDefaults: new { one = RouteParameter.Optional, two = RouteParameter.Optional })
                 .Generate(routeName, new { one = 1 });
             Assert.Equal(expected, actual);
@@ -95,10 +70,10 @@ namespace RimDev.Supurlative.Tests
         [Fact]
         public void Can_generate_two_optional_path_items_template_two()
         {
-            string expected = _baseURL + "foo/1/2";
+            string expected = _baseUrl + "foo/1/2";
             const string routeName = "foo.one.two";
             const string routeTemplate = "foo/{one}/{two}";
-            string actual = CreateAUrlGenerator(routeName, routeTemplate,
+            string actual = TestHelper.CreateAUrlGenerator(_baseUrl, routeName, routeTemplate,
                 routeDefaults: new { one = RouteParameter.Optional, two = RouteParameter.Optional })
                 .Generate(routeName, new { one = 1, two = 2 });
             Assert.Equal(expected, actual);
@@ -107,10 +82,10 @@ namespace RimDev.Supurlative.Tests
         [Fact]
         public void Make_sure_null_nested_class_property_values_do_not_show_in_url()
         {
-            string expected = _baseURL + "foo/1";
+            string expected = _baseUrl + "foo/1";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateAUrlGenerator(routeName, routeTemplate)
+            string actual = TestHelper.CreateAUrlGenerator(_baseUrl, routeName, routeTemplate)
                 .Generate(routeName, new TestNestedClass { Id = 1 });
             Assert.Equal(expected, actual);
         }
@@ -118,10 +93,10 @@ namespace RimDev.Supurlative.Tests
         [Fact]
         public void Make_sure_nested_class_property_values_do_show_in_url()
         {
-            string expected = _baseURL + "foo/1?filter.level=33";
+            string expected = _baseUrl + "foo/1?filter.level=33";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateAUrlGenerator(routeName, routeTemplate)
+            string actual = TestHelper.CreateAUrlGenerator(_baseUrl, routeName, routeTemplate)
                 .Generate(routeName, new TestNestedClass { Id = 1, Filter = new TestNestedClass.NestedClass { Level = 33 } });
             Assert.Equal(expected, actual);
         }
@@ -129,10 +104,10 @@ namespace RimDev.Supurlative.Tests
         [Fact]
         public void Make_sure_generic_nested_class_property_values_do_show_in_url()
         {
-            string expected = _baseURL + "foo/1?filter.level=42";
+            string expected = _baseUrl + "foo/1?filter.level=42";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateAUrlGenerator(routeName, routeTemplate)
+            string actual = TestHelper.CreateAUrlGenerator(_baseUrl, routeName, routeTemplate)
                 .Generate(routeName, new { Id = 1, Filter = new { Level = 42 } });
             Assert.Equal(expected, actual);
         }
