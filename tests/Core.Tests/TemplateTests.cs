@@ -127,6 +127,19 @@ namespace RimDev.Supurlative.Tests
         }
 
         [Fact]
+        public void Can_generate_a_relative_path_with_constraints()
+        {
+            var expected = "/foo/{id}";
+            const string routeName = "foo.show";
+            const string routeTemplate = "foo/{id:int}";
+            string actual = CreateTemplateGenerator(routeName, routeTemplate,
+                routeConstraints: new { id = @"\d+" },
+                supurlativeOptions: new SupurlativeOptions { UriKind = UriKind.Relative })
+                .Generate(routeName);
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
         public void Can_generate_a_path_with_anonymous_complex_route_properties()
         {
             string expected = _baseURL + "foo/{id}{?bar.abc,bar.def}";
