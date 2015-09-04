@@ -89,10 +89,12 @@ namespace RimDev.Supurlative.Tests
         [Fact]
         public void Make_sure_null_nested_class_property_values_do_not_show_in_url()
         {
-            var request = new TestNestedClass { Id = 1 };
-            var result = Generator.Generate("foo.show", request);
-
-            Assert.Equal("http://localhost:8000/foo/1", result);
+            string expected = _baseURL + "foo/1";
+            const string routeName = "foo.show";
+            const string routeTemplate = "foo/{id}";
+            string actual = CreateAUrlGenerator(routeName, routeTemplate)
+                .Generate(routeName, new TestNestedClass { Id = 1 });
+            Assert.Equal(expected, actual);
         }
 
         public class TestNestedClass
