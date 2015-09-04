@@ -112,9 +112,11 @@ namespace RimDev.Supurlative.Tests
         [Fact]
         public void Can_generate_a_path_with_constraints()
         {
-            var expected = "http://localhost:8000/constraints/{id}";
-            var actual = Generator.Generate("constraint");
-
+            string expected = _baseURL + "constraints/{id}";
+            const string routeName = "constraint";
+            const string routeTemplate = "constraints/{id:int}";
+            string actual = ExerciseGetRequestGenerator(routeName, routeTemplate, 
+                routeConstraints: new { id = @"\d+" });
             Assert.Equal(expected, actual);
         }
 
