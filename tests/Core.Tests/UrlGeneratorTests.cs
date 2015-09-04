@@ -7,19 +7,6 @@ namespace RimDev.Supurlative.Tests
 {
     public class UrlGeneratorTests
     {
-        public UrlGeneratorTests()
-        {
-            Generator = InitializeGenerator();
-        }
-
-        private readonly UrlGenerator Generator;
-
-        private static UrlGenerator InitializeGenerator(SupurlativeOptions options = null)
-        {
-            var request = WebApiHelper.GetRequest();
-            return new UrlGenerator(request);
-        }
-
         const string _baseURL = "http://localhost:8000/";
 
         private static UrlGenerator CreateAUrlGenerator(
