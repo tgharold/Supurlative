@@ -7,6 +7,8 @@ namespace RimDev.Supurlative.Tests
 {
     public class TemplateTests
     {
+        const string _baseURL = "http://localhost:8000/";
+
         public TemplateGenerator Generator { get; set; }
 
         public TemplateTests()
