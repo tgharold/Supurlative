@@ -21,6 +21,28 @@ namespace RimDev.Supurlative.Tests
         }
 
         [Fact]
+        public void Can_generate_fully_qualified_path()
+        {
+            string expected = "http://localhost:8000/foo/{id}";
+
+            HttpRouteCollection routes = new HttpRouteCollection();
+            const string routeName = "foo.show";
+            routes.MapHttpRoute(routeName, "foo/{id}");
+            HttpConfiguration configuration = new HttpConfiguration(routes);
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                RequestUri = new Uri("http://localhost:8000/"),
+                Method = HttpMethod.Get
+            };
+            request.SetConfiguration(configuration);
+            SupurlativeOptions options = null;
+            TemplateGenerator generator = new TemplateGenerator(request, options ?? SupurlativeOptions.Defaults);
+            string actual = generator.Generate(routeName);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
         public void Can_generate_a_fully_qualified_path()
         {
             var expected = "http://localhost:8000/foo/{id}";
