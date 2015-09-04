@@ -10,14 +10,12 @@ namespace RimDev.Supurlative.Tests
 {
     public static class TestHelper
     {
-
-        public static TemplateGenerator CreateATemplateGenerator(
+        private static HttpRequestMessage CreateARequest(
             string baseUrl,
             string routeName,
             string routeTemplate,
             object routeDefaults = null,
-            object routeConstraints = null,
-            SupurlativeOptions supurlativeOptions = null
+            object routeConstraints = null
             )
         {
             HttpRouteCollection routes = new HttpRouteCollection();
@@ -34,6 +32,20 @@ namespace RimDev.Supurlative.Tests
                 Method = HttpMethod.Get
             };
             request.SetConfiguration(configuration);
+            return request;
+        }
+
+        public static TemplateGenerator CreateATemplateGenerator(
+            string baseUrl,
+            string routeName,
+            string routeTemplate,
+            object routeDefaults = null,
+            object routeConstraints = null,
+            SupurlativeOptions supurlativeOptions = null
+            )
+        {
+            HttpRequestMessage request;
+            request = CreateARequest(baseUrl, routeName, routeTemplate, routeDefaults, routeConstraints);
             return new TemplateGenerator(request, supurlativeOptions);
         }
 
@@ -46,20 +58,8 @@ namespace RimDev.Supurlative.Tests
             SupurlativeOptions supurlativeOptions = null
             )
         {
-            HttpRouteCollection routes = new HttpRouteCollection();
-            routes.MapHttpRoute(
-                routeName,
-                routeTemplate,
-                defaults: routeDefaults,
-                constraints: routeConstraints
-                );
-            HttpConfiguration configuration = new HttpConfiguration(routes);
-            HttpRequestMessage request = new HttpRequestMessage
-            {
-                RequestUri = new Uri(baseUrl),
-                Method = HttpMethod.Get
-            };
-            request.SetConfiguration(configuration);
+            HttpRequestMessage request;
+            request = CreateARequest(baseUrl, routeName, routeTemplate, routeDefaults, routeConstraints);
             return new UrlGenerator(request, supurlativeOptions);
         }
 
@@ -72,20 +72,8 @@ namespace RimDev.Supurlative.Tests
             SupurlativeOptions supurlativeOptions = null
             )
         {
-            HttpRouteCollection routes = new HttpRouteCollection();
-            routes.MapHttpRoute(
-                routeName,
-                routeTemplate,
-                defaults: routeDefaults,
-                constraints: routeConstraints
-                );
-            HttpConfiguration configuration = new HttpConfiguration(routes);
-            HttpRequestMessage request = new HttpRequestMessage
-            {
-                RequestUri = new Uri(baseUrl),
-                Method = HttpMethod.Get
-            };
-            request.SetConfiguration(configuration);
+            HttpRequestMessage request;
+            request = CreateARequest(baseUrl, routeName, routeTemplate, routeDefaults, routeConstraints);
             return new Generator(request, supurlativeOptions);
         }
     }
