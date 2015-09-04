@@ -22,45 +22,38 @@ namespace RimDev.Supurlative.Tests
             return new TemplateGenerator(request, options ?? SupurlativeOptions.Defaults);
         }
 
-        [Fact]
-        public void Can_generate_fully_qualified_path()
+        private static string ExerciseGetGenerator(string routeName, string routeTemplate, SupurlativeOptions options = null)
         {
-            string expected = "http://localhost:8000/foo/{id}";
-
             HttpRouteCollection routes = new HttpRouteCollection();
-            const string routeName = "foo.show";
-            routes.MapHttpRoute(routeName, "foo/{id}");
+            routes.MapHttpRoute(routeName, routeTemplate);
             HttpConfiguration configuration = new HttpConfiguration(routes);
             HttpRequestMessage request = new HttpRequestMessage
             {
-                RequestUri = new Uri("http://localhost:8000/"),
+                RequestUri = new Uri(_baseURL),
                 Method = HttpMethod.Get
             };
             request.SetConfiguration(configuration);
-            SupurlativeOptions options = null;
-            TemplateGenerator generator = new TemplateGenerator(request, options ?? SupurlativeOptions.Defaults);
-            string actual = generator.Generate(routeName);
-
-            Assert.Equal(expected, actual);
+            TemplateGenerator generator = new TemplateGenerator(request, options);
+            return generator.Generate(routeName);
         }
 
         [Fact]
         public void Can_generate_a_fully_qualified_path()
         {
-            var expected = "http://localhost:8000/foo/{id}";
-            var actual = Generator.Generate("foo.show");
-
+            string expected = _baseURL + "foo/{id}";
+            const string routeName = "foo.show";
+            const string routeTemplate = "foo/{id}";
+            string actual = ExerciseGetGenerator(routeName, routeTemplate);
             Assert.Equal(expected, actual);
         }
 
         [Fact]
         public void Can_generate_a_relative_path()
         {
-            var generator = InitializeGenerator(new SupurlativeOptions { UriKind = UriKind.Relative });
-
             var expected = "/foo/{id}";
-            var actual = generator.Generate("foo.show");
-
+            const string routeName = "foo.show";
+            const string routeTemplate = "foo/{id}";
+            string actual = ExerciseGetGenerator(routeName, routeTemplate, new SupurlativeOptions { UriKind = UriKind.Relative });
             Assert.Equal(expected, actual);
         }
 
