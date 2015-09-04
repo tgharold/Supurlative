@@ -61,10 +61,11 @@ namespace RimDev.Supurlative.Tests
         [Fact]
         public void Can_generate_a_path_with_anonymous_complex_route_properties()
         {
-            var expected = "http://localhost:8000/foo/1?bar.abc=abc&bar.def=def";
-
-            var actual = Generator.Generate("foo.show", new { Id = 1, Bar = new { Abc = "abc", Def = "def" } });
-
+            string expected = _baseURL + "foo/1?bar.abc=abc&bar.def=def";
+            const string routeName = "foo.show";
+            const string routeTemplate = "foo/{id}";
+            string actual = CreateAUrlGenerator(routeName, routeTemplate)
+                .Generate(routeName, new { Id = 1, Bar = new { Abc = "abc", Def = "def" } });
             Assert.Equal(expected, actual);
         }
 
