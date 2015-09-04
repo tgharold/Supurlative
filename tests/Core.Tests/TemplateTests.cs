@@ -22,11 +22,10 @@ namespace RimDev.Supurlative.Tests
             return new TemplateGenerator(request, options ?? SupurlativeOptions.Defaults);
         }
 
-        private static string ExerciseGetGenerator(string routeName, string routeTemplate, object routeOptions, SupurlativeOptions generatorOptions)
+        private static string ExerciseGetRequestGenerator(string routeName, string routeTemplate, object routeOptions, SupurlativeOptions supurlativeOptions)
         {
             HttpRouteCollection routes = new HttpRouteCollection();
             routes.MapHttpRoute(routeName, routeTemplate, routeOptions);
-            routes.MapHttpRoute("bar.show", "bar/{id}", defaults: new { id = RouteParameter.Optional });
             HttpConfiguration configuration = new HttpConfiguration(routes);
             HttpRequestMessage request = new HttpRequestMessage
             {
@@ -34,18 +33,18 @@ namespace RimDev.Supurlative.Tests
                 Method = HttpMethod.Get
             };
             request.SetConfiguration(configuration);
-            TemplateGenerator generator = new TemplateGenerator(request, generatorOptions);
+            TemplateGenerator generator = new TemplateGenerator(request, supurlativeOptions);
             return generator.Generate(routeName);
         }
 
-        private static string ExerciseGetGenerator(string routeName, string routeTemplate, SupurlativeOptions generatorOptions)
+        private static string ExerciseGetRequestGenerator(string routeName, string routeTemplate, SupurlativeOptions supurlativeOptions)
         {
-            return ExerciseGetGenerator(routeTemplate, routeTemplate, null, generatorOptions);
+            return ExerciseGetRequestGenerator(routeTemplate, routeTemplate, null, supurlativeOptions);
         }
 
-        private static string ExerciseGetGenerator(string routeName, string routeTemplate)
+        private static string ExerciseGetRequestGenerator(string routeName, string routeTemplate)
         {
-            return ExerciseGetGenerator(routeTemplate, routeTemplate, null, null);
+            return ExerciseGetRequestGenerator(routeTemplate, routeTemplate, null, null);
         }
 
         [Fact]
@@ -54,7 +53,7 @@ namespace RimDev.Supurlative.Tests
             string expected = _baseURL + "foo/{id}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = ExerciseGetGenerator(routeName, routeTemplate);
+            string actual = ExerciseGetRequestGenerator(routeName, routeTemplate);
             Assert.Equal(expected, actual);
         }
 
@@ -64,7 +63,7 @@ namespace RimDev.Supurlative.Tests
             var expected = "/foo/{id}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = ExerciseGetGenerator(routeName, routeTemplate, new SupurlativeOptions { UriKind = UriKind.Relative });
+            string actual = ExerciseGetRequestGenerator(routeName, routeTemplate, new SupurlativeOptions { UriKind = UriKind.Relative });
             Assert.Equal(expected, actual);
         }
 
