@@ -9,7 +9,7 @@ namespace RimDev.Supurlative.Tests
     {
         const string _baseURL = "http://localhost:8000/";
 
-        private static TemplateGenerator CreateTemplateGenerator(
+        private static TemplateGenerator CreateATemplateGenerator(
             string routeName, 
             string routeTemplate, 
             object routeDefaults = null,
@@ -40,7 +40,7 @@ namespace RimDev.Supurlative.Tests
             string expected = _baseURL + "foo/{id}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate)
+            string actual = CreateATemplateGenerator(routeName, routeTemplate)
                 .Generate(routeName);
             Assert.Equal(expected, actual);
         }
@@ -51,7 +51,7 @@ namespace RimDev.Supurlative.Tests
             var expected = "/foo/{id}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate, 
+            string actual = CreateATemplateGenerator(routeName, routeTemplate, 
                 supurlativeOptions: new SupurlativeOptions { UriKind = UriKind.Relative })
                 .Generate(routeName);
             Assert.Equal(expected, actual);
@@ -63,7 +63,7 @@ namespace RimDev.Supurlative.Tests
             string expected = _baseURL + "foo/{id}{?bar}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate)
+            string actual = CreateATemplateGenerator(routeName, routeTemplate)
                 .Generate(routeName, new { Id = 1, Bar = "Foo" });
             Assert.Equal(expected, actual);
         }
@@ -74,7 +74,7 @@ namespace RimDev.Supurlative.Tests
             string expected = _baseURL + "foo/{id}{?bar,bam}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate)
+            string actual = CreateATemplateGenerator(routeName, routeTemplate)
                 .Generate(routeName, new { Id = 1, Bar = "Foo", Bam = 2 });
             Assert.Equal(expected, actual);
         }
@@ -85,7 +85,7 @@ namespace RimDev.Supurlative.Tests
             string expected = _baseURL + "foo{/id}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate,
+            string actual = CreateATemplateGenerator(routeName, routeTemplate,
                 routeDefaults: new { id = RouteParameter.Optional })
                 .Generate(routeName);
             Assert.Equal(expected, actual);
@@ -97,7 +97,7 @@ namespace RimDev.Supurlative.Tests
             string expected = _baseURL + "foo{/one}{/two}";
             const string routeName = "foo.one.two";
             const string routeTemplate = "foo/{one}/{two}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate,
+            string actual = CreateATemplateGenerator(routeName, routeTemplate,
                 routeDefaults: new { one = RouteParameter.Optional, two = RouteParameter.Optional })
                 .Generate(routeName);
             Assert.Equal(expected, actual);
@@ -109,7 +109,7 @@ namespace RimDev.Supurlative.Tests
             string expected = _baseURL + "foo/{one}/{two}";
             const string routeName = "foo.one.two";
             const string routeTemplate = "foo/{one}/{two}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate)
+            string actual = CreateATemplateGenerator(routeName, routeTemplate)
                 .Generate(routeName);
             Assert.Equal(expected, actual);
         }
@@ -120,7 +120,7 @@ namespace RimDev.Supurlative.Tests
             string expected = _baseURL + "foo/{id}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id:int}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate, 
+            string actual = CreateATemplateGenerator(routeName, routeTemplate, 
                 routeConstraints: new { id = @"\d+" })
                 .Generate(routeName);
             Assert.Equal(expected, actual);
@@ -132,7 +132,7 @@ namespace RimDev.Supurlative.Tests
             var expected = "/foo/{id}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id:int}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate,
+            string actual = CreateATemplateGenerator(routeName, routeTemplate,
                 routeConstraints: new { id = @"\d+" },
                 supurlativeOptions: new SupurlativeOptions { UriKind = UriKind.Relative })
                 .Generate(routeName);
@@ -145,7 +145,7 @@ namespace RimDev.Supurlative.Tests
             string expected = _baseURL + "foo/{one}/{two}";
             const string routeName = "foo.one.two";
             const string routeTemplate = "foo/{one:int}/{two:int}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate,
+            string actual = CreateATemplateGenerator(routeName, routeTemplate,
                 routeConstraints: new { one = @"\d+", two = @"\d+" })
                 .Generate(routeName);
             Assert.Equal(expected, actual);
@@ -157,7 +157,7 @@ namespace RimDev.Supurlative.Tests
             string expected = _baseURL + "foo/{id}{?bar.abc,bar.def}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate)
+            string actual = CreateATemplateGenerator(routeName, routeTemplate)
                 .Generate(routeName, new {Id = 1, Bar = new {Abc = "abc", Def = "def"}});
             Assert.Equal(expected, actual);
         }
@@ -168,7 +168,7 @@ namespace RimDev.Supurlative.Tests
             string expected = _baseURL + "foo/{id}{?bar.abc,bar.def}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate)
+            string actual = CreateATemplateGenerator(routeName, routeTemplate)
                 .Generate(routeName, new ComplexRouteParameters());
             Assert.Equal(expected, actual);
         }
@@ -179,7 +179,7 @@ namespace RimDev.Supurlative.Tests
             string expected = _baseURL + "foo/{id}{?bar.abc,bar.def}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate)
+            string actual = CreateATemplateGenerator(routeName, routeTemplate)
                 .Generate(routeName, new ComplexRouteParameters() { Bar = null });
             Assert.Equal(expected, actual);
         }
@@ -190,7 +190,7 @@ namespace RimDev.Supurlative.Tests
             string expected = _baseURL + "foo/{id}{?bar.abc,bar.def}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate)
+            string actual = CreateATemplateGenerator(routeName, routeTemplate)
                 .Generate<ComplexRouteParameters>(routeName);
             Assert.Equal(expected, actual);
         }
@@ -201,7 +201,7 @@ namespace RimDev.Supurlative.Tests
             string expected = _baseURL + "foo/{id}{?test}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = CreateTemplateGenerator(routeName, routeTemplate)
+            string actual = CreateATemplateGenerator(routeName, routeTemplate)
                 .Generate<WithInterface>(routeName);
             Assert.Equal(expected, actual);
         }
