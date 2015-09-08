@@ -38,7 +38,7 @@ namespace RimDev.Supurlative.Tests
             const string routeTemplate = "values";
 
             Result actual = TestHelper.CreateAGenerator(_baseUrl, routeName, routeTemplate)
-                .Generate("dictionary", new DictionaryRequest
+                .Generate(routeName, new DictionaryRequest
                 {
                     Dictionary = new Dictionary<string, string>()
                     {

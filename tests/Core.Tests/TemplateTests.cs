@@ -26,7 +26,7 @@ namespace RimDev.Supurlative.Tests
             var expected = "/foo/{id}";
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
-            string actual = TestHelper.CreateATemplateGenerator(_baseUrl, routeName, routeTemplate, 
+            string actual = TestHelper.CreateATemplateGenerator(_baseUrl, routeName, routeTemplate,
                 supurlativeOptions: new SupurlativeOptions { UriKind = UriKind.Relative })
                 .Generate(routeName);
             Assert.Equal(expected, actual);
@@ -133,7 +133,7 @@ namespace RimDev.Supurlative.Tests
             const string routeName = "foo.show";
             const string routeTemplate = "foo/{id}";
             string actual = TestHelper.CreateATemplateGenerator(_baseUrl, routeName, routeTemplate)
-                .Generate(routeName, new {Id = 1, Bar = new {Abc = "abc", Def = "def"}});
+                .Generate(routeName, new { Id = 1, Bar = new { Abc = "abc", Def = "def" } });
             Assert.Equal(expected, actual);
         }
 
